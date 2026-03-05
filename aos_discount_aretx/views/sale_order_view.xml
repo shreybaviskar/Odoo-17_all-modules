@@ -11,4 +11,20 @@
 
         </field>
     </record>
+
+    <record id="sale_order_total_saved" model="ir.ui.view">
+        <field name="name">sale.order.total.saved</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@widget='account-tax-totals-field']" position="after">
+                    <field name="total_discount_amount"
+                           string="Total Amount Saved"
+                           widget="monetary"
+                           options="{'currency_field': 'currency_id'}"
+                           invisible="total_discount_amount == 0"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

@@ -3,15 +3,11 @@
 
     <template id="invoice_report_discount_amount"
               inherit_id="account.report_invoice_document">
-
-        <!-- Header -->
         <xpath expr="//th[@name='th_discount']" position="after">
             <th t-if="display_discount" class="text-end">
                 Discount Amount
             </th>
         </xpath>
-
-        <!-- Line value -->
         <xpath expr="//span[@t-field='line.discount']/.." position="after">
             <td t-if="display_discount" class="text-end">
                 <t t-if="line.discount_amount &gt; 0">
@@ -21,6 +17,23 @@
             </td>
         </xpath>
 
+    </template>
+
+    <template id="invoice_report_total_saved"
+              inherit_id="account.document_tax_totals">
+        <xpath expr="//tr[contains(@class,'o_total')]" position="after">
+            <t t-set="total_saved"
+               t-value="sum((l.price_unit * l.quantity * l.discount / 100) for l in o.invoice_line_ids)"/>
+            <tr t-if="total_saved &gt; 0">
+                <td>
+                    <strong>Total Amount Saved</strong>
+                </td>
+                <td class="text-end">
+                    <span t-esc="total_saved"
+                          t-options="{'widget':'monetary','display_currency':o.currency_id}"/>
+                </td>
+            </tr>
+        </xpath>
     </template>
 
 </odoo>
