@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend main Settings Reminder Policy app -->
+    <record id="aos_extrafield_res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.aos.extrafield</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="aretx_vehicle.res_config_settings_view_form_tyreshop"/>
+        <field name="arch" type="xml">
+
+            <!-- Next due Kms card just after Months -->
+            <xpath expr="//field[@name='tyre_message_months']/ancestor::div[@class='row mt16 o_settings_container'][1]"
+                   position="after">
+                <div class="row mt16 o_settings_container">
+                    <div class="col-lg-8 col-md-10 col-12">
+                        <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light">
+                            <div class="o_setting_left_pane">
+                                <i class="fa fa-tachometer fa-2x text-warning"/>
+                            </div>
+                            <div class="o_setting_right_pane ms-5">
+                                <label for="extra_next_due_kms" class="fw-bold text-dark"/>
+                                <field name="extra_next_due_kms" class="w-100"
+                                       placeholder="Next due Kms field is autocalculated from Current Kms"/>
+                                <div class="text-muted mt4 small">
+                                    Next due Kms field is autocalculated from Current Kms
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Extra section for invoice visibility toggles -->
+            <xpath expr="//h2[i[@class='fa fa-credit-card-alt me-2 text-primary']]" position="before">
+                <h2 class="text-primary mt16 mb8">
+                    <i class="fa fa-plus-square-o me-2 text-primary"/>
+                    Extra
+                </h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-lg-8 col-md-10 col-12">
+                        <div class="d-flex flex-wrap gap-3 align-items-start">
+                            <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light ms-0" style="min-width: 340px;">
+                                <div class="o_setting_right_pane w-100">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <label for="extra_show_lr_no" class="fw-bold text-dark mb-0"/>
+                                        <field name="extra_show_lr_no" widget="boolean_toggle" class="o_switch ms-3"/>
+                                    </div>
+                                    <div class="text-muted mt4 small">Show LR No. in Invoicing</div>
+                                </div>
+                            </div>
+                            <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light" style="min-width: 420px;">
+                                <div class="o_setting_right_pane w-100">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <label for="extra_show_transporter" class="fw-bold text-dark mb-0"/>
+                                        <field name="extra_show_transporter" widget="boolean_toggle" class="o_switch ms-3"/>
+                                    </div>
+                                    <div class="text-muted mt4 small">Show Transporter in Invoicing</div>
+                                </div>
+                            </div>
+                            <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light" style="min-width: 420px;">
+                                <div class="o_setting_right_pane w-100">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <label for="extra_show_dispatched_through" class="fw-bold text-dark mb-0"/>
+                                        <field name="extra_show_dispatched_through" widget="boolean_toggle" class="o_switch ms-3"/>
+                                    </div>
+                                    <div class="text-muted mt4 small">Show Dispatched Through in Invoicing</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend standalone Reminder Policy action form -->
+    <record id="aos_extrafield_custom_reminder_settings_form_view" model="ir.ui.view">
+        <field name="name">res.config.settings.custom.view.aos.extrafield</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="aretx_vehicle.custom_reminder_settings_form_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Next due Kms after Months -->
+            <xpath expr="//field[@name='tyre_message_months']/ancestor::div[@class='row mt16 o_settings_container'][1]"
+                   position="after">
+                <div class="row mt16 o_settings_container">
+                    <div class="col-lg-8 col-md-10 col-12">
+                        <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light">
+                            <div class="o_setting_left_pane">
+                                <i class="fa fa-tachometer fa-2x text-warning"/>
+                            </div>
+                            <div class="o_setting_right_pane ms-5">
+                                <label for="extra_next_due_kms" class="fw-bold text-dark"/>
+                                <field name="extra_next_due_kms" class="w-100"
+                                       placeholder="Next due Kms field is autocalculated from Current Kms"/>
+                                <div class="text-muted mt4 small">
+                                    Next due Kms field is autocalculated from Current Kms
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Extra section -->
+            <xpath expr="//h2[i[@class='fa fa-credit-card-alt me-2 text-primary']]" position="before">
+                <h2 class="text-primary mt16 mb8">
+                    <i class="fa fa-plus-square-o me-2 text-primary"/>
+                    Extra
+                </h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-lg-8 col-md-10 col-12">
+                        <div class="d-flex flex-wrap gap-3 align-items-start">
+                            <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light ms-0" style="min-width: 420px;">
+                                <div class="o_setting_right_pane w-100">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <label for="extra_show_lr_no" class="fw-bold text-dark mb-0"/>
+                                        <field name="extra_show_lr_no" widget="boolean_toggle" class="o_switch ms-3"/>
+                                    </div>
+                                    <div class="text-muted mt4 small">Show LR No. in Invoicing</div>
+                                </div>
+                            </div>
+                            <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light" style="min-width: 420px;">
+                                <div class="o_setting_right_pane w-100">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <label for="extra_show_transporter" class="fw-bold text-dark mb-0"/>
+                                        <field name="extra_show_transporter" widget="boolean_toggle" class="o_switch ms-3"/>
+                                    </div>
+                                    <div class="text-muted mt4 small">Show Transporter in Invoicing</div>
+                                </div>
+                            </div>
+                            <div class="o_setting_box shadow-sm rounded-3 p-3 flex-fill border border-200 bg-light" style="min-width: 420px;">
+                                <div class="o_setting_right_pane w-100">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <label for="extra_show_dispatched_through" class="fw-bold text-dark mb-0"/>
+                                        <field name="extra_show_dispatched_through" widget="boolean_toggle" class="o_switch ms-3"/>
+                                    </div>
+                                    <div class="text-muted mt4 small">Show Dispatched Through in Invoicing</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+

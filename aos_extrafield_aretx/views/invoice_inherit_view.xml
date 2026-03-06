@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="aos_extrafield_inherited_invoice_view" model="ir.ui.view">
+        <field name="name">account.move.inherited.aos.extrafield</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group[@id='header_left_group']/field[@name='partner_shipping_id']"
+                   position="after">
+
+                <field name="vehicle_number"
+                       context="{'default_x_vehicle_number_id': vehicle_number,'default_partner_id':partner_id}"
+                       options="{'no_create': False, 'no_quick_create': True}"
+                       invisible="move_type not in ('out_invoice','out_refund')"/>
+
+                <!--                <field name="vehicle_number" options=\"{'create': false}\"/>-->
+                <field name="vehicle_kms" invisible="move_type not in ('out_invoice','out_refund')"/>
+
+                <field name="show_lr_no" invisible="1"/>
+                <field name="show_transporter" invisible="1"/>
+                <field name="show_dispatched_through" invisible="1"/>
+                <field name="show_next_due_kms" invisible="1"/>
+                <field name="lr_no" invisible="move_type not in ('out_invoice','out_refund') or not show_lr_no"/>
+                <field name="transporter" invisible="move_type not in ('out_invoice','out_refund') or not show_transporter"/>
+                <field name="dispatched_through" invisible="move_type not in ('out_invoice','out_refund') or not show_dispatched_through"/>
+                <field name="next_due_kms" invisible="1" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
