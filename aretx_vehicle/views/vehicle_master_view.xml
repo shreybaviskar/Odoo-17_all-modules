@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    #tree view
+    <record id="master_tree_view" model="ir.ui.view">
+        <field name="name">vehicle.master.tree</field>
+        <field name="model">vehicle.master.model</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!--                <field name="x_customer_id">-->
+                <!--                    <tree string="Customers">-->
+                <!--&lt;!&ndash;                        <field name="x_customer_id"/>&ndash;&gt;-->
+                <!--                        <field name="id"/>-->
+                <!--                    </tree>-->
+                <!--                </field>-->
+                <field name="x_customer_id"/>
+                <field name="x_brand_id" />
+                <field name="x_model_id"/>
+                <field name="x_vehicle_number_id"/>
+                <field name="x_color_id"/>
+                <field name="x_avg_km"/>
+
+            </tree>
+        </field>
+    </record>
+    <!--    #form view-->
+    <record id="master_form_view" model="ir.ui.view">
+        <field name="name">vehicle.form</field>
+        <field name="model">vehicle.master.model</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <!--                        <field name="x_customer_id">-->
+                        <!--                    <tree string="Customers">-->
+                        <!--&lt;!&ndash;                        <field name="x_customer_id"/>&ndash;&gt;-->
+                        <!--                        <field name="id"/>-->
+                        <!--                    </tree>-->
+                        <!--                </field>-->
+                        <field name="x_customer_id" widget="many2many_tags" required="1"/>
+                        <field name="x_brand_id" options="{'no_create_edit': True}"/>
+<!--                        <field name="x_model_id"/>-->
+                        <field name="x_model_id" options="{'no_create': False, 'no_quick_create': True}" context="{'default_brand_id': x_brand_id}" />
+                        <field name="x_vehicle_number_id"/>
+
+
+                        <field name="x_color_id"/>
+                        <field name="x_avg_km"/>
+                        <field name="last_message_date"/>
+                        <field name="last_wa_message_date"/>
+
+                      
+                    </group>
+                </sheet>
+                <!--Chatter-->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--    <record id="action_master" model="ir.actions.act_window">-->
+    <!--        <field name="name">Vehicle Details</field>-->
+    <!--        <field name="type">ir.actions.act_window</field>-->
+    <!--        <field name="res_model">vehicle.master.model</field>-->
+    <!--        <field name="view_mode">tree,form</field>-->
+    <!--        <field name="context">{}</field>-->
+    <!--        <field name="help" type="html">-->
+    <!--            <p class="o_view_nocontent_smiling_face">-->
+    <!--                Create your first Vehicle details !-->
+    <!--            </p>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+
+    <!--    <menuitem id="menu_master"-->
+    <!--              name="Vehicle Details"-->
+    <!--              action="action_master"-->
+    <!--              parent="menu_vehicle_root"-->
+    <!--              sequence="40"-->
+    <!--    />-->
+
+
+  
+
+    
+
+    <!-- <record id="project_view_kanban_inherit_vehicle_below" model="ir.ui.view">
+    <field name="name">project.project.kanban.inherit.vehicle.below</field>
+    <field name="model">project.project</field>
+    <field name="inherit_id" ref="project.view_project_kanban"/>
+    <field name="arch" type="xml">
+        
+        <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="x_vehicle_brand_name"/>
+        </xpath>
+
+        <xpath expr="//span[@t-if='record.partner_id.value']" position="after">
+            <div t-if="record.x_vehicle_brand_name.raw_value" class="d-block text-primary fw-bold mt-1" style="font-size: 12px;">
+                <span class="fa fa-car me-2" title="Vehicle Brand"></span>
+                <t t-esc="record.x_vehicle_brand_name.value"/>
+            </div>
+        </xpath>
+
+    </field>
+</record> -->
+
+<record id="project_view_kanban_inherit_vehicle_details" model="ir.ui.view">
+    <field name="name">project.project.kanban.inherit.vehicle.details</field>
+    <field name="model">project.project</field>
+    <field name="inherit_id" ref="project.view_project_kanban"/>
+    <field name="arch" type="xml">
+        
+        <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="x_vehicle_brand_name"/>
+            <field name="x_vehicle_model_name"/>
+            <field name="x_vehicle_reg_number"/>
+        </xpath>
+
+        <xpath expr="//span[@t-if='record.partner_id.value']" position="after">
+            <div t-if="record.x_vehicle_brand_name.raw_value" class="d-block fw-bold mt-1" style="font-size: 12px;">
+                <span class="fa fa-tachometer me-2" title="Brand"></span>
+                <t t-esc="record.x_vehicle_brand_name.value"/>  <t t-esc="record.x_vehicle_model_name.value"/>
+                
+            </div>
+            
+            <div t-if="record.x_vehicle_reg_number.raw_value" class="d-block fw-bold" style="font-size: 12px;">
+                <span class="fa fa-car me-2" title="Vehicle Number"></span>
+                <t t-esc="record.x_vehicle_reg_number.value"/>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+
+
+    <record id="view_task_form2_inherited_vehicle" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.vehicle</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="x_vehicle_brand_name" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_kanban_inherit_vehicle_brand" model="ir.ui.view">
+    <field name="name">project.task.kanban.inherit.vehicle</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.view_task_kanban"/>
+    <field name="arch" type="xml">
+        
+        <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="x_vehicle_brand_name"/>
+            <field name="x_vehicle_model_name"/>
+            <field name="x_vehicle_reg_number"/>
+        </xpath>
+
+        <xpath expr="//span[@t-if='record.partner_id.value']" position="after">
+            <div t-if="record.x_vehicle_brand_name.raw_value" class="o_text_overflow fw-bold mt-1" style="font-size: 12px; display: block;">
+                <span class="fa fa-tachometer me-2" title="Vehicle Brand"></span>
+                <field name="x_vehicle_brand_name"/>  <field name="x_vehicle_model_name"/>
+            </div>
+
+            <div t-if="record.x_vehicle_reg_number.raw_value" class="d-block fw-bold" style="font-size: 12px;">
+                <span class="fa fa-car me-2" title="Vehicle Number"></span>
+                <field name="x_vehicle_reg_number"/>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+</odoo>
