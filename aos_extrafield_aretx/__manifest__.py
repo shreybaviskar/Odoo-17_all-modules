@@ -14,8 +14,8 @@
     "data": [
         "views/configuration_view.xml",
         "views/invoice_inherit_view.xml",
+        "reports/invoice_report.xml",
     ],
     "installable": True,
     "application": False,
 }
-

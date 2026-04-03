@@ -4,6 +4,7 @@
     "author": "Shrey22kar",
     "license": "LGPL-3",
     "depends": [
+        'base',
         'product',
         'mail',
         'account'

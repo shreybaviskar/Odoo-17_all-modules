@@ -3,6 +3,7 @@ import io
 import json
 
 import logging
+
 _logger = logging.getLogger(__name__)
 
 try:
@@ -13,7 +14,9 @@ try:
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
-    logging.warning("Google Generative AI libraries not installed. Please install: pip install google-generativeai pillow pdfplumber")
+    logging.warning(
+        "Google Generative AI libraries not installed. Please install: pip install google-generativeai pillow pdfplumber")
+
 
 class GeminiExtractor:
     """Utility class for extracting structured data from images and PDFs using Gemini AI"""
@@ -21,7 +24,8 @@ class GeminiExtractor:
     def __init__(self, api_key=None):
         """Initialize Gemini with API key"""
         if not GEMINI_AVAILABLE:
-            raise ImportError("Required libraries not installed. Install: pip install google-generativeai pillow pdfplumber")
+            raise ImportError(
+                "Required libraries not installed. Install: pip install google-generativeai pillow pdfplumber")
 
         if not api_key:
             raise ValueError("Gemini API key is not set. Please Configure it in Odoo Settings.")
@@ -80,19 +84,19 @@ class GeminiExtractor:
             if isinstance(image_data, str):
                 # Clean the base64 string - remove whitespace and ensure proper padding
                 base64_str = image_data.strip().replace('\n', '').replace('\r', '').replace(' ', '')
-                
+
                 # Add padding if needed
                 missing_padding = len(base64_str) % 4
                 if missing_padding:
                     base64_str += '=' * (4 - missing_padding)
-                
+
                 try:
                     image_bytes = base64.b64decode(base64_str, validate=True)
                 except Exception as e:
                     _logger.error(f"Error decoding base64: {str(e)}")
                     # Try without validation
                     image_bytes = base64.b64decode(base64_str)
-                
+
                 # Open the image
                 image = Image.open(io.BytesIO(image_bytes))
             elif isinstance(image_data, bytes):
@@ -114,13 +118,13 @@ class GeminiExtractor:
                     image = rgb_image
                 elif image.mode != 'RGB':
                     image = image.convert('RGB')
-                
+
                 # Save as PNG bytes to pass to Gemini (avoids WEBP conversion)
                 png_buffer = io.BytesIO()
                 image.save(png_buffer, format='PNG')
                 png_bytes = png_buffer.getvalue()
                 png_buffer.close()
-                
+
                 # Use the PNG bytes directly instead of PIL Image to avoid WEBP conversion
                 image_for_gemini = png_bytes
             except Exception as e:
@@ -138,14 +142,14 @@ class GeminiExtractor:
                     # Last resort: use original image
                     image_for_gemini = image
 
-            extract_prompt = """Extract ALL information from this image and return it as a JSON object with the following structure. Extract everything you can see:
+            extract_prompt = """Extract information from this image and return it as a JSON object with the following structure:
 
 {
-    "contact_name": "Full name of the person (if visible)",
+    "contact_name": "Full name of the PRIMARY or FIRST person only (single name, not multiple)",
     "company_name": "Company or organization name (if visible)",
-    "email": "Email address (if visible)",
-    "phone": "Phone number (if visible)",
-    "mobile": "Mobile number (if visible)",
+    "email": "Primary email address only (single value)",
+    "phone": "Primary phone/landline number only (single value, not mobile)",
+    "mobile": "Primary mobile number only (single value)",
     "website": "Website URL (if visible)",
     "street": "Street address (if visible)",
     "street2": "Additional address line (if visible)",
@@ -153,19 +157,20 @@ class GeminiExtractor:
     "state": "State or province name (if visible)",
     "zip": "ZIP or postal code (if visible)",
     "country": "Country name (if visible)",
-    "title": "Job title or document title (if visible)",
-    "job_position": "Job position or designation (if visible on business card)",
+    "title": "Document title or heading (if visible)",
+    "job_position": "Job position or designation of the primary person (single value)",
     "description": "Any additional text content, notes, or description",
     "document_number": "Any ID numbers, document numbers, reference numbers (if visible)",
     "date": "Any dates visible (birth date, expiry date, issue date, etc.)",
-    "other_info": "Any other relevant information extracted"
+    "other_info": "Any other people, extra phone numbers, qualifications, or remaining information not captured above"
 }
 
-IMPORTANT: 
+IMPORTANT:
 - Return ONLY valid JSON, no additional text before or after
 - If a field is not found, use null or empty string
-- Extract all visible text, numbers, and information
-- Be thorough and extract everything you can see"""
+- Each field must contain a SINGLE value only - never combine multiple names, numbers, or values into one field
+- If there are multiple people, capture only the first/primary person in the main fields and put the rest in other_info
+- If there are multiple phone numbers, put only the first in phone/mobile and put the rest in other_info"""
 
             # Pass image as dictionary with explicit MIME type to avoid WEBP conversion
             # Gemini's library tries to convert PIL Images to WEBP, but passing bytes
@@ -178,7 +183,7 @@ IMPORTANT:
                     image_for_gemini = img_buffer.getvalue()
                 else:
                     raise ValueError("Cannot convert image to bytes")
-            
+
             # Pass as dictionary with explicit PNG MIME type to avoid WEBP conversion
             response = self.model.generate_content([
                 {"mime_type": "image/png", "data": image_for_gemini},
@@ -237,17 +242,17 @@ IMPORTANT:
                 raise ValueError("Could not extract text from PDF")
 
             # Use Gemini to extract structured data from text
-            extract_prompt = f"""Extract ALL information from the following text content and return it as a JSON object with the following structure:
+            extract_prompt = f"""Extract information from the following text content and return it as a JSON object with the following structure:
 
 {pdf_text[:15000]}  # Limit to avoid token limits
 
 Return JSON with this structure:
 {{
-    "contact_name": "Full name of the person (if found)",
+    "contact_name": "Full name of the PRIMARY or FIRST person only (single name, not multiple)",
     "company_name": "Company or organization name (if found)",
-    "email": "Email address (if found)",
-    "phone": "Phone number (if found)",
-    "mobile": "Mobile number (if found)",
+    "email": "Primary email address only (single value)",
+    "phone": "Primary phone/landline number only (single value)",
+    "mobile": "Primary mobile number only (single value)",
     "website": "Website URL (if found)",
     "street": "Street address (if found)",
     "street2": "Additional address line (if found)",
@@ -255,19 +260,20 @@ Return JSON with this structure:
     "state": "State or province name (if found)",
     "zip": "ZIP or postal code (if found)",
     "country": "Country name (if found)",
-    "title": "Job title or document title (if found)",
-    "job_position": "Job position or designation (if found on business card)",
+    "title": "Document title or heading (if found)",
+    "job_position": "Job position or designation of the primary person (single value)",
     "description": "Any additional text content, notes, or description",
     "document_number": "Any ID numbers, document numbers, reference numbers (if found)",
     "date": "Any dates found (birth date, expiry date, issue date, etc.)",
-    "other_info": "Any other relevant information extracted"
+    "other_info": "Any other people, extra phone numbers, qualifications, or remaining information not captured above"
 }}
 
-IMPORTANT: 
+IMPORTANT:
 - Return ONLY valid JSON, no additional text before or after
 - If a field is not found, use null or empty string
-- Extract all information from the text
-- Be thorough and extract everything"""
+- Each field must contain a SINGLE value only - never combine multiple names, numbers, or values into one field
+- If there are multiple people, capture only the first/primary person in the main fields and put the rest in other_info
+- If there are multiple phone numbers, put only the first in phone/mobile and put the rest in other_info"""
 
             response = self.model.generate_content(extract_prompt)
             response_text = response.text.strip()
@@ -330,4 +336,3 @@ IMPORTANT:
             extracted["phone"] = phone_match.group()
 
         return extracted
-

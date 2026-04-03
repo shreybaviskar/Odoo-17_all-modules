@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_invoice_extra_fields"
+              inherit_id="account.report_invoice_document"
+              name="AOS Extra Fields on Invoice Report">
+
+        <xpath expr="//div[@id='informations']/div[@name='due_date']"
+               position="before">
+
+            <div t-if="o.lr_no"
+                 t-attf-class="#{'col-auto col-3 mw-100' if report_type != 'html' else 'col'} mb-2"
+                 name="lr_no">
+                <strong>LR No.:</strong><br/>
+                <span t-field="o.lr_no"/>
+            </div>
+
+            <div t-if="o.transporter"
+                 t-attf-class="#{'col-auto col-3 mw-100' if report_type != 'html' else 'col'} mb-2"
+                 name="transporter">
+                <strong>Transporter:</strong><br/>
+                <span t-field="o.transporter"/>
+            </div>
+
+            <div t-if="o.dispatched_through"
+                 t-attf-class="#{'col-auto col-3 mw-100' if report_type != 'html' else 'col'} mb-2"
+                 name="dispatched_through">
+                <strong>Dispatched Through:</strong><br/>
+                <span t-field="o.dispatched_through"/>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
